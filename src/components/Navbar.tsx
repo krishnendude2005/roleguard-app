@@ -46,6 +46,9 @@ export const Navbar = ({ isAuthenticated = false, isAdmin = false }: NavbarProps
               <Button variant="ghost" asChild>
                 <Link to="/dashboard">Dashboard</Link>
               </Button>
+              <Button variant="ghost" asChild>
+                <Link to="/items">Items</Link>
+              </Button>
               {isAdmin && (
                 <Button variant="ghost" asChild>
                   <Link to="/admin">Admin</Link>

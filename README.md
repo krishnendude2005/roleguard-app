@@ -1,73 +1,302 @@
-# Welcome to your Lovable project
+# SecureAuth - Full-Stack Role-Based Authentication System
 
-## Project info
+A modern, secure authentication system built with React, TypeScript, and Lovable Cloud, featuring role-based access control, user management, and CRUD operations.
 
-**URL**: https://lovable.dev/projects/e07a33be-9f21-4fb1-9aeb-0ef4b79afff4
+## 🚀 Features
 
-## How can I edit this code?
+### Authentication & Authorization
+- **Secure Signup**: Email/password registration with role selection (User/Admin)
+- **JWT Authentication**: Token-based authentication via Lovable Cloud
+- **Password Security**: Secure password hashing and validation
+- **Role-Based Access Control**: Granular permissions for users and administrators
+- **Protected Routes**: Automatic authentication guards and redirects
 
-There are several ways of editing your application.
+### User Management
+- **User Dashboard**: Personal profile, role information, and activity stats
+- **Admin Panel**: Complete user management with role promotion/demotion
+- **Profile System**: User profiles with automatic creation on signup
+- **User Statistics**: Real-time metrics for admins (total users, admins, items)
 
-**Use Lovable**
+### CRUD Operations
+- **Item Management**: Create, read, update, and delete user-specific items
+- **Search & Filter**: Real-time search with status filtering
+- **Pagination**: Clean pagination controls (10 items per page)
+- **Sorting**: Sort by created date or updated date
+- **Owner Tracking**: Admins can view all items with owner information
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e07a33be-9f21-4fb1-9aeb-0ef4b79afff4) and start prompting.
+### Security Features
+- **Row-Level Security (RLS)**: Database-level access control
+- **Separate Roles Table**: Prevents privilege escalation attacks
+- **Input Validation**: Zod schema validation on all forms
+- **Security Definer Functions**: Prevents recursive RLS issues
+- **Protected API Routes**: All endpoints require authentication
 
-Changes made via Lovable will be committed automatically to this repo.
+### UI/UX
+- **Modern Design**: Professional SaaS-inspired interface with gradients
+- **Responsive**: Mobile-first design that works on all devices
+- **Dark Mode Ready**: Theme system with dark mode support
+- **Toast Notifications**: User feedback for all actions
+- **Loading States**: Smooth loading indicators throughout
 
-**Use your preferred IDE**
+## 🛠️ Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Frontend
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Utility-first styling
+- **shadcn/ui** - Beautiful UI components
+- **React Hook Form** - Form management
+- **Zod** - Schema validation
+- **React Router** - Client-side routing
+- **TanStack Query** - Server state management
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Backend (Lovable Cloud)
+- **Supabase** - Backend-as-a-Service
+- **PostgreSQL** - Relational database
+- **Row-Level Security** - Database access control
+- **JWT Tokens** - Authentication
+- **Edge Functions** - Serverless functions (if needed)
 
-Follow these steps:
+## 📦 Installation & Setup
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Prerequisites
+- Node.js 18+ and npm
+- Git
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Local Development
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. **Clone the repository**
+```bash
+git clone <your-repo-url>
+cd secureauth
+```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+2. **Install dependencies**
+```bash
+npm install
+```
+
+3. **Environment Setup**
+
+The project uses Lovable Cloud, so environment variables are auto-configured. However, if you need to connect to your own Supabase instance, create a `.env` file:
+
+```bash
+# .env.example
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+VITE_SUPABASE_PROJECT_ID=your_project_id
+```
+
+4. **Start development server**
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🗄️ Database Schema
 
-**Use GitHub Codespaces**
+### Tables
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+#### `profiles`
+- `id` (UUID, Primary Key) - References auth.users
+- `name` (TEXT, NOT NULL) - User's full name
+- `email` (TEXT, NOT NULL, UNIQUE) - User's email
+- `created_at` (TIMESTAMPTZ) - Account creation timestamp
+- `updated_at` (TIMESTAMPTZ) - Last update timestamp
 
-## What technologies are used for this project?
+#### `user_roles`
+- `id` (UUID, Primary Key)
+- `user_id` (UUID, NOT NULL) - References auth.users
+- `role` (app_role ENUM: 'user', 'admin')
+- `created_at` (TIMESTAMPTZ)
 
-This project is built with:
+#### `items`
+- `id` (UUID, Primary Key)
+- `user_id` (UUID, NOT NULL) - References auth.users
+- `title` (TEXT, NOT NULL) - Item title
+- `description` (TEXT) - Item description
+- `status` (item_status ENUM: 'active', 'completed', 'archived')
+- `created_at` (TIMESTAMPTZ)
+- `updated_at` (TIMESTAMPTZ)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Row-Level Security (RLS) Policies
 
-## How can I deploy this project?
+#### profiles
+- Users can view/update their own profile
+- Admins can view all profiles
 
-Simply open [Lovable](https://lovable.dev/projects/e07a33be-9f21-4fb1-9aeb-0ef4b79afff4) and click on Share -> Publish.
+#### user_roles
+- Users can view their own roles
+- Admins can view and manage all roles
 
-## Can I connect a custom domain to my Lovable project?
+#### items
+- Users can CRUD their own items
+- Admins can view, update, and delete all items
 
-Yes, you can!
+## 🔑 API Endpoints (Lovable Cloud)
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+All endpoints are automatically handled by Lovable Cloud (Supabase). Here's the conceptual API structure:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### Authentication
+
+**POST** `/auth/signup`
+```json
+{
+  "email": "user@example.com",
+  "password": "securepassword",
+  "options": {
+    "data": {
+      "name": "John Doe",
+      "role": "user"
+    }
+  }
+}
+```
+
+**POST** `/auth/login`
+```json
+{
+  "email": "user@example.com",
+  "password": "securepassword"
+}
+```
+
+**GET** `/auth/me`
+- Returns current user profile and roles
+- Requires: Authorization header with JWT token
+
+**POST** `/auth/logout`
+- Clears authentication session
+
+### Database Operations (via Supabase Client)
+
+**Items CRUD**
+- `GET /rest/v1/items` - List items (filtered by user/admin)
+- `POST /rest/v1/items` - Create item
+- `PATCH /rest/v1/items?id=eq.{id}` - Update item
+- `DELETE /rest/v1/items?id=eq.{id}` - Delete item
+
+**Admin Operations**
+- `GET /rest/v1/profiles` - List all users (admin only)
+- `GET /rest/v1/user_roles` - List all roles (admin only)
+- `POST /rest/v1/user_roles` - Add role (admin only)
+- `DELETE /rest/v1/user_roles` - Remove role (admin only)
+
+## 🧪 Demo Credentials
+
+After deployment, create test accounts:
+
+**Admin Account**
+- Email: admin@example.com
+- Password: admin123456
+- Role: Admin
+
+**Regular User**
+- Email: user@example.com
+- Password: user123456
+- Role: User
+
+## 🚀 Deployment
+
+### Deploy to Lovable
+
+1. Click the **Publish** button in your Lovable editor
+2. Your app will be deployed to `yourapp.lovable.app`
+3. Connect a custom domain in Project Settings > Domains (requires paid plan)
+
+### Deploy to Vercel
+
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables in Vercel dashboard
+3. Deploy with one click
+
+### Deploy to Netlify
+
+1. Connect your GitHub repository to Netlify
+2. Build command: `npm run build`
+3. Publish directory: `dist`
+4. Add environment variables in Netlify settings
+
+## 📱 Routes
+
+- `/` - Landing page with features
+- `/signup` - User registration
+- `/login` - User login
+- `/dashboard` - User dashboard (protected)
+- `/items` - Item management (protected)
+- `/admin` - Admin panel (admin only)
+
+## 🔒 Security Best Practices
+
+1. **Input Validation**: All forms use Zod schemas
+2. **Password Requirements**: Minimum 6 characters (increase for production)
+3. **RLS Policies**: Database-level access control
+4. **Separate Roles Table**: Prevents privilege escalation
+5. **Security Definer Functions**: Prevents RLS recursion
+6. **JWT Tokens**: Secure session management
+7. **HTTPS Only**: Always use HTTPS in production
+
+## 🎨 Customization
+
+### Design System
+
+The design system is defined in `src/index.css` and `tailwind.config.ts`:
+
+```css
+/* Custom colors */
+--primary: 221 83% 53%;
+--gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(262 83% 58%));
+--shadow-lg: 0 10px 40px -10px hsl(221 83% 53% / 0.2);
+```
+
+### Add New Roles
+
+To add new roles beyond User/Admin:
+
+1. Update the enum in migration:
+```sql
+ALTER TYPE public.app_role ADD VALUE 'moderator';
+```
+
+2. Update TypeScript types
+3. Add RLS policies for new role
+4. Update UI components
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgments
+
+- Built with [Lovable](https://lovable.dev) - AI-powered full-stack development
+- UI components from [shadcn/ui](https://ui.shadcn.com)
+- Backend powered by [Supabase](https://supabase.com)
+
+## 📞 Support
+
+For support, email support@yourapp.com or open an issue on GitHub.
+
+## 🗺️ Roadmap
+
+- [ ] Email verification
+- [ ] Password reset functionality
+- [ ] OAuth providers (Google, GitHub)
+- [ ] Two-factor authentication
+- [ ] Activity logs
+- [ ] Export data functionality
+- [ ] Bulk user operations
+- [ ] Advanced analytics dashboard
+
+---
+
+**Built with ❤️ using Lovable**

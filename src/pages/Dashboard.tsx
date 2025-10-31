@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { AuthGuard } from "@/components/AuthGuard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, Shield, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { User, Shield, Calendar, Package, ArrowRight } from "lucide-react";
 
 interface Profile {
   name: string;
@@ -18,6 +20,7 @@ interface Role {
 const Dashboard = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<string[]>([]);
+  const [itemCount, setItemCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,8 +39,14 @@ const Dashboard = () => {
           .select('role')
           .eq('user_id', user.id);
 
+        const { count } = await supabase
+          .from('items')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+
         setProfile(profileData);
         setRoles(rolesData?.map((r: Role) => r.role) || []);
+        setItemCount(count || 0);
       }
       
       setLoading(false);
@@ -71,7 +80,7 @@ const Dashboard = () => {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <Card className="shadow-custom-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -138,6 +147,26 @@ const Dashboard = () => {
                       })
                     : 'N/A'}
                 </p>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-custom-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Package className="h-5 w-5 text-primary" />
+                  My Items
+                </CardTitle>
+                <CardDescription>Total items created</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <p className="text-2xl font-bold">{itemCount}</p>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link to="/items">
+                      View All <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
