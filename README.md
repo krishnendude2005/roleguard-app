@@ -1,23 +1,26 @@
 # SecureAuth - Full-Stack Role-Based Authentication System
 
-A modern, secure authentication system built with React, TypeScript, and Lovable Cloud, featuring role-based access control, user management, and CRUD operations.
+A modern, secure authentication system built with React, TypeScript, and Supabase, featuring role-based access control, user management, and CRUD operations.
 
 ## 🚀 Features
 
 ### Authentication & Authorization
+
 - **Secure Signup**: Email/password registration with role selection (User/Admin)
-- **JWT Authentication**: Token-based authentication via Lovable Cloud
+- **JWT Authentication**: Token-based authentication via Supabase
 - **Password Security**: Secure password hashing and validation
 - **Role-Based Access Control**: Granular permissions for users and administrators
 - **Protected Routes**: Automatic authentication guards and redirects
 
 ### User Management
+
 - **User Dashboard**: Personal profile, role information, and activity stats
 - **Admin Panel**: Complete user management with role promotion/demotion
 - **Profile System**: User profiles with automatic creation on signup
 - **User Statistics**: Real-time metrics for admins (total users, admins, items)
 
 ### CRUD Operations
+
 - **Item Management**: Create, read, update, and delete user-specific items
 - **Search & Filter**: Real-time search with status filtering
 - **Pagination**: Clean pagination controls (10 items per page)
@@ -25,6 +28,7 @@ A modern, secure authentication system built with React, TypeScript, and Lovable
 - **Owner Tracking**: Admins can view all items with owner information
 
 ### Security Features
+
 - **Row-Level Security (RLS)**: Database-level access control
 - **Separate Roles Table**: Prevents privilege escalation attacks
 - **Input Validation**: Zod schema validation on all forms
@@ -32,6 +36,7 @@ A modern, secure authentication system built with React, TypeScript, and Lovable
 - **Protected API Routes**: All endpoints require authentication
 
 ### UI/UX
+
 - **Modern Design**: Professional SaaS-inspired interface with gradients
 - **Responsive**: Mobile-first design that works on all devices
 - **Dark Mode Ready**: Theme system with dark mode support
@@ -41,6 +46,7 @@ A modern, secure authentication system built with React, TypeScript, and Lovable
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **React 18** - UI library
 - **TypeScript** - Type safety
 - **Vite** - Build tool and dev server
@@ -51,7 +57,8 @@ A modern, secure authentication system built with React, TypeScript, and Lovable
 - **React Router** - Client-side routing
 - **TanStack Query** - Server state management
 
-### Backend (Lovable Cloud)
+### Backend
+
 - **Supabase** - Backend-as-a-Service
 - **PostgreSQL** - Relational database
 - **Row-Level Security** - Database access control
@@ -61,27 +68,30 @@ A modern, secure authentication system built with React, TypeScript, and Lovable
 ## 📦 Installation & Setup
 
 ### Prerequisites
+
 - Node.js 18+ and npm
 - Git
 
 ### Local Development
 
 1. **Clone the repository**
+
 ```bash
-git clone <your-repo-url>
+git clone <repository-url>
 cd secureauth
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
 
 3. **Environment Setup**
 
-The project uses Lovable Cloud, so environment variables are auto-configured. However, if you need to connect to your own Supabase instance, create a `.env` file:
+Create a `.env` file with your Supabase credentials:
 
-```bash
+```env
 # .env.example
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
@@ -89,6 +99,7 @@ VITE_SUPABASE_PROJECT_ID=your_project_id
 ```
 
 4. **Start development server**
+
 ```bash
 npm run dev
 ```
@@ -100,6 +111,7 @@ The app will be available at `http://localhost:8080`
 ### Tables
 
 #### `profiles`
+
 - `id` (UUID, Primary Key) - References auth.users
 - `name` (TEXT, NOT NULL) - User's full name
 - `email` (TEXT, NOT NULL, UNIQUE) - User's email
@@ -107,12 +119,14 @@ The app will be available at `http://localhost:8080`
 - `updated_at` (TIMESTAMPTZ) - Last update timestamp
 
 #### `user_roles`
+
 - `id` (UUID, Primary Key)
 - `user_id` (UUID, NOT NULL) - References auth.users
 - `role` (app_role ENUM: 'user', 'admin')
 - `created_at` (TIMESTAMPTZ)
 
 #### `items`
+
 - `id` (UUID, Primary Key)
 - `user_id` (UUID, NOT NULL) - References auth.users
 - `title` (TEXT, NOT NULL) - Item title
@@ -124,24 +138,28 @@ The app will be available at `http://localhost:8080`
 ### Row-Level Security (RLS) Policies
 
 #### profiles
+
 - Users can view/update their own profile
 - Admins can view all profiles
 
 #### user_roles
+
 - Users can view their own roles
 - Admins can view and manage all roles
 
 #### items
+
 - Users can CRUD their own items
 - Admins can view, update, and delete all items
 
-## 🔑 API Endpoints (Lovable Cloud)
+## 🔑 API Endpoints (Supabase)
 
-All endpoints are automatically handled by Lovable Cloud (Supabase). Here's the conceptual API structure:
+All endpoints are automatically handled by Supabase. Here's the conceptual API structure:
 
 ### Authentication
 
 **POST** `/auth/signup`
+
 ```json
 {
   "email": "user@example.com",
@@ -156,6 +174,7 @@ All endpoints are automatically handled by Lovable Cloud (Supabase). Here's the 
 ```
 
 **POST** `/auth/login`
+
 ```json
 {
   "email": "user@example.com",
@@ -164,21 +183,25 @@ All endpoints are automatically handled by Lovable Cloud (Supabase). Here's the 
 ```
 
 **GET** `/auth/me`
+
 - Returns current user profile and roles
 - Requires: Authorization header with JWT token
 
 **POST** `/auth/logout`
+
 - Clears authentication session
 
 ### Database Operations (via Supabase Client)
 
 **Items CRUD**
+
 - `GET /rest/v1/items` - List items (filtered by user/admin)
 - `POST /rest/v1/items` - Create item
 - `PATCH /rest/v1/items?id=eq.{id}` - Update item
 - `DELETE /rest/v1/items?id=eq.{id}` - Delete item
 
 **Admin Operations**
+
 - `GET /rest/v1/profiles` - List all users (admin only)
 - `GET /rest/v1/user_roles` - List all roles (admin only)
 - `POST /rest/v1/user_roles` - Add role (admin only)
@@ -189,22 +212,18 @@ All endpoints are automatically handled by Lovable Cloud (Supabase). Here's the 
 After deployment, create test accounts:
 
 **Admin Account**
+
 - Email: admin@example.com
 - Password: admin123456
 - Role: Admin
 
 **Regular User**
+
 - Email: user@example.com
 - Password: user123456
 - Role: User
 
 ## 🚀 Deployment
-
-### Deploy to Lovable
-
-1. Click the **Publish** button in your Lovable editor
-2. Your app will be deployed to `yourapp.lovable.app`
-3. Connect a custom domain in Project Settings > Domains (requires paid plan)
 
 ### Deploy to Vercel
 
@@ -256,6 +275,7 @@ The design system is defined in `src/index.css` and `tailwind.config.ts`:
 To add new roles beyond User/Admin:
 
 1. Update the enum in migration:
+
 ```sql
 ALTER TYPE public.app_role ADD VALUE 'moderator';
 ```
@@ -278,9 +298,8 @@ This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
-- Built with [Lovable](https://lovable.dev) - AI-powered full-stack development
-- UI components from [shadcn/ui](https://ui.shadcn.com)
-- Backend powered by [Supabase](https://supabase.com)
+- UI components from [shadcn/ui](https://ui.shadcn.com/)
+- Backend powered by [Supabase](https://supabase.com/)
 
 ## 📞 Support
 
@@ -296,7 +315,3 @@ For support, email support@yourapp.com or open an issue on GitHub.
 - [ ] Export data functionality
 - [ ] Bulk user operations
 - [ ] Advanced analytics dashboard
-
----
-
-**Built with ❤️ using Lovable**
